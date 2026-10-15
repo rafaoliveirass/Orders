@@ -1,7 +1,5 @@
 using System.ComponentModel.DataAnnotations;
 
-using System.ComponentModel.DataAnnotations;
-
 namespace Orders.Domain.Entities
 {
     public class Product

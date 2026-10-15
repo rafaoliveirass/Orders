@@ -18,7 +18,9 @@ namespace Orders.Application.Validators
             {
                 item.RuleFor(x => x.Quantity)
                     .GreaterThan(0)
-                    .WithMessage("A quantidade do produto deve ser maior que zero.");
+                    .WithMessage("A quantidade do produto deve ser maior que zero.")
+                    .Must(q => q % 1 == 0)
+                    .WithMessage("A quantidade deve ser um número inteiro.");
 
                 item.RuleFor(x => x.ProductId)
                     .NotEmpty()

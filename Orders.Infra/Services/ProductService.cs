@@ -1,8 +1,6 @@
 ﻿using Orders.Domain.Entities;
-
 using Orders.Domain.Services;
 using Orders.Domain.Repositories;
-using Orders.Domain.Entities;
 
 namespace Orders.Infra.Services
 {

@@ -7,10 +7,7 @@ namespace Orders.Domain.Entities
     {
         [Key]
         public Guid Id { get; set; }
-
-        // FK to Order table
         public Guid OrderId { get; set; }
-
         public Guid ProductId { get; set; }
 
         [NotMapped]

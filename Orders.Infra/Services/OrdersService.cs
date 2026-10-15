@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-using Orders.Application.Dtos;
 using Orders.Domain.Entities;
 using Orders.Domain.Repositories;
 using Orders.Domain.Services;

@@ -1,7 +1,8 @@
 Sobre o que utilizei para desenvolver a aplicação:
 - ORM EF core
+- token JWT
 - FluentValidation
-- Arquitetura modular DDD (Domain-Driven Design) com (API, application, Domain, Infra)
+- Arquitetura DDD (Domain-Driven Design) com (API, application, Domain, Infra)
 
 
 Passos para rodar o docker compose
@@ -32,7 +33,7 @@ Dados para testar
 JSON para inclusão de um pedido, com os Ids que estão cadastrados no banco gerado pela migration
 {
   "customerId": "557bc0cb-a88d-44cf-a072-1efdaed024c9",
-  "currency": "R$",
+  "currency": "BRL",
   "itens": [
     {
       "productId": "d4f7fecb-aa31-4789-8f14-ee6f72f8b539",

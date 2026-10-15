@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using Orders.Domain.Entities;
-
 namespace Orders.Application.Dtos
 {
     public class OrderRequestDto

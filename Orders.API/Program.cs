@@ -9,8 +9,6 @@ using Orders.Application.Validators;
 using Orders.Domain.Repositories;
 using Orders.Domain.Services;
 using Orders.Infra.Context;
-using Microsoft.EntityFrameworkCore;
-using System.Threading;
 using Orders.Infra.Repositories;
 using Orders.Infra.Services;
 using System.Text;
@@ -124,7 +122,7 @@ using (var scope = app.Services.CreateScope())
     }
 }
 
-//if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment()) comentado para usar o swagger no docker, produção descomentar caso não queira
 //{
 app.UseSwagger();
 app.UseSwaggerUI(c =>

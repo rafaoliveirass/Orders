@@ -46,6 +46,7 @@ namespace Orders.Controllers
                 customerId = item.CustomerId,
                 currency = item.Currency,
                 total = item.Total,
+                status = item.Status,
                 itens = item.Itens.Select(i => new OrderItemResponsetDto
                 {
                     ProductId = i.ProductId,
@@ -71,6 +72,7 @@ namespace Orders.Controllers
                     id = order.Id,
                     total = order.Total,
                     customerId = order.CustomerId,
+                    status = order.Status,
                     currency = order.Currency,
                     itens = order.Itens.Select(i => new OrderItemResponsetDto
                     {
