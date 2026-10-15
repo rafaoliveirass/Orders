@@ -9,6 +9,8 @@ using Orders.Application.Validators;
 using Orders.Domain.Repositories;
 using Orders.Domain.Services;
 using Orders.Infra.Context;
+using Microsoft.EntityFrameworkCore;
+using System.Threading;
 using Orders.Infra.Repositories;
 using Orders.Infra.Services;
 using System.Text;
@@ -31,7 +33,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddTransient<IValidator<OrderRequestDto>, OrderRequestDtoValidator>();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Orders.API")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("Orders.Infra")));
 
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 var key = Encoding.ASCII.GetBytes(jwtSettings["Key"]);
@@ -96,17 +98,47 @@ builder.Services.AddTransient<TokenService>();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+
+    const int maxAttempts = 5;
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
+    {
+        try
+        {
+            db.Database.Migrate();
+            logger.LogInformation("Database migrated successfully.");
+            break;
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Database migration attempt {Attempt} failed.", attempt);
+            if (attempt == maxAttempts)
+            {
+                throw;
+            }
+            Thread.Sleep(5000);
+        }
+    }
 }
 
-    app.UseHttpsRedirection();
+//if (app.Environment.IsDevelopment())
+//{
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Orders API v1");
+});
 
-    app.UseAuthentication();
+//}
 
-    app.UseAuthorization();
+//app.UseHttpsRedirection();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 
