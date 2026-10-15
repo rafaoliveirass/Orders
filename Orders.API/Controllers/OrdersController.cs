@@ -9,7 +9,6 @@ using Orders.Infra.Services;
 namespace Orders.Controllers
 {
     [ApiController]
-    [Authorize]
     [Route("orders")]
     public class OrdersController : ControllerBase
     {
