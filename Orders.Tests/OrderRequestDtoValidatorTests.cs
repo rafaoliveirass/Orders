@@ -14,7 +14,26 @@ namespace Orders.Tests
             var dto = new OrderRequestDto
             {
                 customerId = System.Guid.NewGuid(),
+                currency = "BRL",
                 itens = null!
+            };
+
+            var result = _validator.Validate(dto);
+
+            Assert.False(result.IsValid);
+        }
+
+        [Fact]
+        public void Should_Fail_When_ProductId_Is_Empty()
+        {
+            var dto = new OrderRequestDto
+            {
+                customerId = System.Guid.NewGuid(),
+                currency = "BRL",
+                itens = new List<OrderItemRequestDto>
+                {
+                    new OrderItemRequestDto { ProductId = System.Guid.Empty, Quantity = 1 }
+                }
             };
 
             var result = _validator.Validate(dto);
@@ -28,6 +47,7 @@ namespace Orders.Tests
             var dto = new OrderRequestDto
             {
                 customerId = System.Guid.NewGuid(),
+                currency = "BRL",
                 itens = new List<OrderItemRequestDto>()
             };
 
@@ -42,6 +62,7 @@ namespace Orders.Tests
             var dto = new OrderRequestDto
             {
                 customerId = System.Guid.NewGuid(),
+                currency = "BRL",
                 itens = new List<OrderItemRequestDto>
                 {
                     new OrderItemRequestDto { ProductId = System.Guid.NewGuid(), Quantity = -10}
@@ -59,6 +80,7 @@ namespace Orders.Tests
             var dto = new OrderRequestDto
             {
                 customerId = System.Guid.NewGuid(),
+                currency = "BRL",
                 itens = new List<OrderItemRequestDto>
                 {
                     new OrderItemRequestDto { ProductId = System.Guid.NewGuid(), Quantity = 2}

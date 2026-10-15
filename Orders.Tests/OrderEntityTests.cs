@@ -1,7 +1,5 @@
 using Xunit;
 using Orders.Domain.Entities;
-using System;
-using System.Collections.Generic;
 
 namespace Orders.Tests
 {
@@ -33,7 +31,6 @@ namespace Orders.Tests
             var expectedTotal = 2 * 3.5m + 1 * 4m;
 
             order.Total = 0m;
-            // simulate calculation like controller does
             order.Total = order.Itens.Sum(i => i.UnitPrice * i.Quantity);
 
             Assert.Equal(expectedTotal, order.Total);
