@@ -1,0 +1,36 @@
+version: '3.8'
+services:
+  # Serviço do Banco de Dados
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: orders
+    ports:
+      - "5433:5433"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  web-app:
+    image: orders-api:latest
+    build:
+      context: .
+      dockerfile: Orders.API/Dockerfile
+    ports:
+      - "9091:9091"
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5433;Database=orders;Username=postgres;Password=admin
+      - ASPNETCORE_URLS=http://+:9091
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
