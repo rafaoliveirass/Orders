@@ -6,16 +6,23 @@ Sobre o que utilizei para desenvolver a aplicação:
 
 Passos para rodar o docker compose
 
+- Precisa que o docker engine esteja instalado na máquina.
 - Ir na raiz do projeto e abrir o terminal.
-- executar o comando "docker-compose up --build"
+- executar o comando "docker-compose up"
 - após isso irá subir o banco de dados e a aplicação.
-
+- acesse com o caminho http://localhost:8080/swagger/index.html
 
 Dados para testar 
 
 - login do token (mocado sem tabela)
   - user: admin
   - password: admin
+
+  json para o post do token
+{
+  "username": "admin",
+  "password": "admin"
+}
 
 - Usuario banco de dados:
   - user: postgres

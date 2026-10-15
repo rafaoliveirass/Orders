@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   # Serviço do Banco de Dados
   db:
@@ -9,14 +8,15 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: orders
     ports:
-      - "5433:5433"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 2m
 
   web-app:
     image: orders-api:latest
@@ -24,10 +24,13 @@ services:
       context: .
       dockerfile: Orders.API/Dockerfile
     ports:
-      - "9091:9091"
+      - "8080:8080"
     environment:
-      - ConnectionStrings__DefaultConnection=Host=db;Port=5433;Database=orders;Username=postgres;Password=admin
-      - ASPNETCORE_URLS=http://+:9091
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=orders;Username=postgres;Password=admin
+      - ASPNETCORE_URLS=http://+:8080
+      - JwtSettings__Issuer=localhost
+      - JwtSettings__Audience=localhost
+      - JwtSettings__SecretKey=CHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWTCHAVEJWT
     depends_on:
       db:
         condition: service_healthy
