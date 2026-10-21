@@ -168,14 +168,15 @@ namespace Orders.Infra.Repositories
                 {
                     if (replenish)
                     {
-                        entityProduct.AvailableQuantity += item.Quantity;
+                        if (order.Status == OrderStatus.Confirmed)
+                            entityProduct.AvailableQuantity += item.Quantity;
                     }
                     else
                     {
                         if (entityProduct.AvailableQuantity < item.Quantity)
                             throw new InvalidOperationException($"Estoque insuficiente para o produto {entityProduct.Name}. Disponível no momento : {entityProduct.AvailableQuantity}, Precisa ter : {item.Quantity}");
 
-                        entityProduct.AvailableQuantity -= item.Quantity;
+                            entityProduct.AvailableQuantity -= item.Quantity;
                     }
                 }
             }
