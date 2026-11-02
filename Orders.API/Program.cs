@@ -5,9 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Orders.Application.Dtos;
+using Orders.Application.Services;
+using Orders.Application.Services.Interfaces;
 using Orders.Application.Validators;
 using Orders.Domain.Repositories;
-using Orders.Domain.Services;
 using Orders.Infra.Context;
 using Orders.Infra.Repositories;
 using Orders.Infra.Services;
@@ -22,10 +23,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
-builder.Services.AddScoped<OrderService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
-builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddTransient<IValidator<OrderRequestDto>, OrderRequestDtoValidator>();

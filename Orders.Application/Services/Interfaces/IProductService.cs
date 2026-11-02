@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Orders.Domain.Entities;
 
-namespace Orders.Domain.Services
+namespace Orders.Application.Services.Interfaces
 {
      public interface IProductService
      {

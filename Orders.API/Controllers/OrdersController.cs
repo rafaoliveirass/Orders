@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Orders.Application.Dtos;
 using Orders.Application.Erros;
+using Orders.Application.Services.Interfaces;
 using Orders.Domain.Entities;
 using Orders.Infra.Services;
 
@@ -13,11 +14,11 @@ namespace Orders.Controllers
     public class OrdersController : ControllerBase
     {
         private readonly ILogger<OrdersController> _logger;
-        private readonly OrderService _orderService;
-        private readonly ProductService _productService;
+        private readonly IOrderService _orderService;
+        private readonly IProductService _productService;
         private readonly IValidator<OrderRequestDto> _orderRequestDtoValidator;
 
-        public OrdersController(IValidator<OrderRequestDto> orderRequestDtoValidator, OrderService orderServce, ProductService productService, TokenService tokenService, ILogger<OrdersController> logger)
+        public OrdersController(IValidator<OrderRequestDto> orderRequestDtoValidator, IOrderService orderServce, IProductService productService, TokenService tokenService, ILogger<OrdersController> logger)
         {
             _logger = logger;
             _orderService = orderServce;
@@ -130,8 +131,6 @@ namespace Orders.Controllers
 
                 await _orderService.AddAsync(order);
 
-                await _orderService.SaveChangesAsync();
-
                 return Ok(order);
             }
             catch (Exception ex)
@@ -147,7 +146,6 @@ namespace Orders.Controllers
         public async Task<IActionResult> ConfirmAsync(Guid id)
         {
             await _orderService.ConfirmAsync(id);
-            await _orderService.SaveChangesAsync();
             return Ok();
         }
 
@@ -156,76 +154,64 @@ namespace Orders.Controllers
         public async Task<IActionResult> CancelAsync(Guid id)
         {
             await _orderService.CancelAsync(id);
-            await _orderService.SaveChangesAsync();
             return Ok();
         }
 
+        [Authorize]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutOrder(Guid id, Order orderUpdate)
+        {
+            await _orderService.PutAsync(id, orderUpdate);
+            return NoContent();
+        }
 
-        // métodos não solicitado pelo teste.
 
-        //[Authorize]
-        //[HttpPut("{id}")]
-        //public async Task<IActionResult> PutOrder(Guid id, Order orderUpdate)
-        //{
-        //    await _orderService.PutAsync(id, orderUpdate);
+       //[Authorize]
+       //[HttpPatch("{id}")]
+       // public async Task<IActionResult> PatchAsync(Guid id, [FromBody] JsonPatchDocument<Order> patchDoc)
+       // {
+       //     if (patchDoc == null)
+       //         return BadRequest();
+            
+       //     try
+       //     {
+       //         await _orderService.PatchAsync(id, patchDoc, ModelState);
 
-        //    await _orderService.SaveChangesAsync();
+       //     }
+       //     catch (DbUpdateConcurrencyException)
+       //     {
+       //         _logger.LogWarning("Erro ao atualizar os dados.");
+       //         throw;
+       //     }
 
-        //    return NoContent();
-        //}
+       //     return Ok();
 
-        // métodos não solicitado pelo teste.
+       // }
 
-        //[Authorize]
-        //[HttpPatch("{id}")]
-        //public async Task<IActionResult> PatchAsync(Guid id, [FromBody] JsonPatchDocument<Order> patchDoc)
-        //{
-        //    if (patchDoc == null)
-        //        return BadRequest();
+       [Authorize]
+       [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+                return BadRequest("O ID do pedido fornecido é inválido.");
+            try
+            {
+                var productExists = await _orderService.Get(id);
 
-        //    await _orderService.PatchAsync(id, patchDoc, ModelState);
+                if (productExists == null)
+                    return NotFound($"pedido com o ID {id} não foi encontrado.");
 
-        //    try
-        //    {
-        //        await _orderService.SaveChangesAsync();
-        //    }
-        //    catch (DbUpdateConcurrencyException)
-        //    {
-        //        _logger.LogWarning("Erro ao atualizar os dados.");
-        //        throw;
-        //    }
+                await _orderService.DeleteAsync(id);
 
-        //    return Ok();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao tentar excluir o pedido com o ID: {PedidoId}", id);
 
-        //}
+                return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a exclusão.");
+            }
 
-        // métodos não solicitado pelo teste.
-
-        //[Authorize]
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteAsync(Guid id)
-        //{
-        //    if (id == Guid.Empty)
-        //        return BadRequest("O ID do pedido fornecido é inválido.");
-        //    try
-        //    {
-        //        var productExists = await _orderService.Get(id);
-
-        //        if (productExists==null)
-        //            return NotFound($"pedido com o ID {id} não foi encontrado.");
-
-        //        await _orderService.DeleteAsync(id);
-        //        await _orderService.SaveChangesAsync();
-
-        //        return Ok();
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError(ex, "Erro ao tentar excluir o pedido com o ID: {PedidoId}", id);
-
-        //        return StatusCode(StatusCodes.Status500InternalServerError, "Ocorreu um erro interno ao processar a exclusão.");
-        //    }
-
-        //}
+        }
     }
 }

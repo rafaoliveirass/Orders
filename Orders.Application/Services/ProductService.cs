@@ -1,8 +1,9 @@
 ﻿using Orders.Domain.Entities;
-using Orders.Domain.Services;
 using Orders.Domain.Repositories;
+using Orders.Application.Services.Interfaces
+;
 
-namespace Orders.Infra.Services
+namespace Orders.Application.Services
 {
     public class ProductService : IProductService
     {

@@ -12,7 +12,7 @@ namespace Orders.Domain.Repositories
         Task ConfirmAsync(Guid id); 
         Task CancelAsync(Guid id);
         Task PutAsync(Guid id, Order orderUpdate);
-        Task PatchAsync(Guid id, JsonPatchDocument<Order> patchDoc, ModelStateDictionary modelState);
+        //Task PatchAsync(Guid id, JsonPatchDocument<Order> patchDoc, ModelStateDictionary modelState);
         Task DeleteAsync(Guid id);
         Task SaveChangesAsync();
     }
